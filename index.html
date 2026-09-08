@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Colas Warner</title>
+<meta name="description" content="Estado, colas y mapa de las atracciones del Parque Warner en tiempo real.">
+<meta name="theme-color" content="#101725">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__row">
+    <h1>Colas Warner</h1>
+    <button id="refresh" class="icon-btn" type="button" title="Actualizar" aria-label="Actualizar">⟳</button>
+  </div>
+  <p id="summary" class="summary">Cargando atracciones…</p>
+  <div class="search">
+    <input id="search" type="search" placeholder="Buscar atracción…" autocomplete="off" aria-label="Buscar atracción">
+    <button id="toggle-filters" class="chip chip--action" type="button" aria-expanded="false">Filtros</button>
+  </div>
+  <div id="filters" class="filters" hidden>
+    <div class="filters__group">
+      <span class="filters__label">Estado</span>
+      <div id="filter-states" class="chips"></div>
+    </div>
+    <div class="filters__group">
+      <span class="filters__label">Intensidad</span>
+      <div id="filter-intensities" class="chips"></div>
+    </div>
+    <div class="filters__group">
+      <span class="filters__label">Zona</span>
+      <div id="filter-lands" class="chips"></div>
+    </div>
+    <div class="filters__group">
+      <span class="filters__label">Espera máxima: <b id="max-wait-value">sin límite</b></span>
+      <input id="max-wait" type="range" min="0" max="120" step="5" value="0">
+    </div>
+    <div class="filters__group">
+      <span class="filters__label">Mostrar</span>
+      <div class="chips">
+        <button class="chip" type="button" data-toggle="onlyFavourites">Sólo favoritas</button>
+        <button class="chip" type="button" data-toggle="hideRidden">Ocultar montadas</button>
+        <button class="chip" type="button" data-toggle="hideHSN">Ocultar [HSN]</button>
+      </div>
+    </div>
+    <div class="filters__group">
+      <span class="filters__label">Ordenar por</span>
+      <div id="filter-sort" class="chips"></div>
+    </div>
+    <button id="reset-filters" class="link-btn" type="button">Restablecer filtros</button>
+  </div>
+</header>
+
+<main>
+  <section id="view-list" class="view">
+    <div id="list" class="list"></div>
+  </section>
+
+  <section id="view-map" class="view" hidden>
+    <div id="map"></div>
+    <div class="map-actions">
+      <button id="locate" class="fab" type="button" title="Mi ubicación" aria-label="Centrar en mi ubicación">◎</button>
+      <button id="center-park" class="fab" type="button" title="Ver el parque" aria-label="Centrar en el parque">▣</button>
+    </div>
+    <p id="map-note" class="map-note"></p>
+  </section>
+
+  <section id="view-plan" class="view" hidden>
+    <div class="panel">
+      <h2>Mi plan del día</h2>
+      <p id="plan-progress" class="plan-progress">—</p>
+      <div class="panel__row">
+        <button id="enable-location" class="link-btn" type="button">Usar mi ubicación</button>
+        <button id="clear-ridden" class="link-btn" type="button">Reiniciar montadas</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Avisos de cola baja</h2>
+      <label class="switch">
+        <input id="alerts-enabled" type="checkbox">
+        <span>Avisarme cuando una favorita baje de <b id="threshold-value">20</b> min</span>
+      </label>
+      <input id="threshold" type="range" min="5" max="90" step="5" value="20">
+      <p id="alerts-note" class="hint"></p>
+    </div>
+
+    <div class="panel">
+      <h2>Siguiente sugerencia</h2>
+      <div id="suggestions" class="list list--compact"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Favoritas</h2>
+      <div id="favourites" class="list list--compact"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Ya montadas</h2>
+      <div id="ridden" class="list list--compact"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button class="tab is-active" type="button" data-view="list">Lista</button>
+  <button class="tab" type="button" data-view="map">Mapa</button>
+  <button class="tab" type="button" data-view="plan">Plan</button>
+</nav>
+
+<dialog id="detail" class="sheet"></dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
